@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas-rect</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300" style="border: 1px solid gray ;"></canvas>
+</body>
+<script>
+    // 创建一个画布
+    let cav = document.getElementById('canvas')
+    if (cav.getContext) {
+        //创建上下文对象
+        let cxt = cav.getContext('2d')
+        //开始绘图
+        cxt.fillStyle = "rgba(0,0,230,0.4)"
+        cxt.fillRect(20, 150, 50, 50)
+        cxt.fillStyle = "rgba(0,0,230,0.4)"
+        cxt.fillRect(50, 180, 50, 50)
+        cxt.strokeStyle = "rgba(0,0,230,0.4)"
+        cxt.strokeRect(50, 180, 50, 50)
+        cxt.rect(120, 180, 100, 100)
+        cxt.strokeStyle = "rgba(0,0,200,0.4)"
+        cxt.stroke()
+        cxt.beginPath()
+        cxt.fillStyle = "rgba(0,0,200,0.4)"
+        cxt.rect(20, 10, 100, 100)
+        cxt.fill()
+        cxt.closePath()
+    }
+</script>
+
+</html>
