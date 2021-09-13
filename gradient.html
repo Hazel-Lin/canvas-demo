@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas-gradient</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+</body>
+<script>
+    let cav = document.getElementById('canvas')
+    if (cav.getContext) {
+        let ctx = cav.getContext('2d')
+
+        var grid = ctx.createLinearGradient(0, 0, 0, 170);
+        grid.addColorStop(0, "black");
+        grid.addColorStop(0.5, "red");
+        grid.addColorStop(1, "white");
+        ctx.fillStyle = grid;
+        ctx.fillRect(20, 20, 190, 180)
+        ctx.stroke()
+    }
+</script>
+
+</html>
