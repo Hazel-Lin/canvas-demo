@@ -1,1 +1,1 @@
-### Some demo about canvas
+### Some demo about canvas.
