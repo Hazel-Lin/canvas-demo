@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas-sign</title>
+</head>
+<style>
+    #myCanvas {
+        border: 1px solid red;
+    }
+</style>
+
+<body>
+    <canvas id="myCanvas" canvas-id="myCanvas" width="500" height="500"></canvas>
+    <button id="clearBtn" size="default" type="default">清空</button>
+    <button id="completeBtn" size=" default" type="default">完成签名</button>
+    <image id="img" />
+</body>
+<script>
+    // 绘制签名框
+    // 生成一个画布 及 创建画布上下文
+    // mousedown的时候 获取到当前鼠标位置作为起始位置
+    // 清空 => 重新绘制画布
+    // 完成 => 生成签名图片
+    // 鼠标当前位置 以浏览器显示区域的左上角为原点开始
+    // console.log(e.clientX);
+    // console.log(e.clientY);
+    let cva = document.getElementById('myCanvas')
+    if (cva.getContext) {
+        let ctx = cva.getContext('2d')
+        let isSigning = false
+
+        cva.addEventListener('mousedown', function (e) {
+            let moveX = e.clientX - cva.offsetLeft
+            let moveY = e.clientY - cva.offsetTop
+            isSigning = true
+            ctx.beginPath()
+            ctx.moveTo(moveX, moveY);
+        })
+        cva.addEventListener('mousemove', function (e) {
+            if (isSigning) {
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = 'red';
+                ctx.lineTo(e.clientX - cva.offsetLeft, e.clientY - cva.offsetTop);
+                ctx.stroke()
+            }
+        })
+        cva.addEventListener('mouseup', function () {
+            isSigning = false
+        })
+
+    }
+    // 清空画布
+    let clearBtn = document.getElementById("clearBtn")
+    clearBtn.addEventListener('click', function () {
+        cva.getContext('2d').clearRect(0, 0, cva.width, cva.height)
+    })
+    // 生成签名图片
+    let completeBtn = document.getElementById("completeBtn")
+    completeBtn.addEventListener('click', function () {
+        let img = document.getElementById("img")
+        img.src = cva.toDataURL()
+        console.log(img, 'img');
+    })
+</script>
+
+</html>
