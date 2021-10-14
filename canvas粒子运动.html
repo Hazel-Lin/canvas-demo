@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas粒子运动</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300" style="border:1px solid blue"></canvas>
+</body>
+<script>
+    // 手写一个粒子运动
+    /*
+    获取上下文 创建画布
+    创建图片 绘图
+    获取画布上指定矩形的像素数据 处理数据 给每个像素点都创建一个粒子(图片跨域问题)
+    创建粒子实例 => 实际上是画一个个填充好的圆
+    画园要素：中心位置（x,y） 半径 起始角 结束角
+    图片粒子化
+    给粒子化后的图片添加缓动函数
+    添加延迟时间 不同的粒子出现的时间不同
+    考虑最后一个粒子
+    什么时候结束动画
+    */
+    // 获取上下文 创建画布 创建图片
+    let canvas = document.getElementById("canvas"),
+        ctx = canvas.getContext('2d'),
+        image = new Image(),
+        // 获取图片的宽高
+        imgWidth = image.width,
+        imgHeight = image.height;
+        // 存放所有的粒子
+        dotList = []
+    image.src = "img.jpeg"
+    // canvas绘图 需要等到图片加载完成才可绘制 否则一片空白
+    image.onload = () => {
+        ctx.drawImage(image, 0, 0)
+        let imageData = ctx.getImageData(0,0,imgWidth,imgHeight)
+        console.log(imageData,'imageData');
+        console.log(imageData.widht,'imageData1');
+        console.log(imageData.height,'imageData2');
+
+        // 处理像素数据 给每个像素点都创建一个粒子
+        // for(let x= 0;x < imageData.width)
+        // ctx.putImageData(imgData,10,70);
+    }
+    // 创建粒子实例 传入画圆需要的中心位置及半径
+    function Dot(centerX,centerY,r){
+        this.x = centerX
+        this.y = centerY
+        this.r = r
+    }
+</script>
+
+</html>

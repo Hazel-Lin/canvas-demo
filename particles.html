@@ -9,59 +9,175 @@
 </head>
 
 <body>
-    <canvas id="canvas" width="300" height="300"></canvas>
+    <canvas id="canvas" width="300" height="300" style="border:1px solid blue"></canvas>
 </body>
 <script>
-    // 创建一个画布
-    let cav = document.getElementById('canvas')
-
-    let ctx = cav.getContext('2d')
-    var winWidth = document.documentElement.clientWidth,
-        winHeight = document.documentElement.clientHeight;
-    cav.width = winWidth;
-    cav.height = winHeight;
-    let image = new Image()
+    // 手写一个粒子运动
+    /*
+    获取上下文 创建画布
+    创建图片 绘图 如何展示整个图片
+    获取画布上指定矩形的像素数据 处理数据 给每个像素点都创建一个粒子(图片跨域问题)
+    创建粒子实例 => 实际上是画一个个填充好的圆
+    画园要素：中心位置（x,y） 半径 起始角 结束角
+    图片粒子化
+    给粒子化后的图片添加缓动函数
+    添加延迟时间 不同的粒子出现的时间不同
+    考虑最后一个粒子
+    什么时候结束动画
+    */
+    // 获取上下文 创建画布 创建图片
+    let canvas = document.getElementById("canvas"),
+        ctx = canvas.getContext('2d'),
+        image = new Image(),
+        // 存放所有的粒子
+        dotList = [];
+    canvas.width = document.documentElement.clientWidth
+    canvas.height = document.documentElement.clientHeight
     image.src = "img.jpeg"
-    var dotList = []
-    var imgW = image.width,
-        imgH = image.height;
+    // canvas绘图 需要等到图片加载完成才可绘制 否则一片空白
     image.onload = () => {
         ctx.drawImage(image, 0, 0)
-        var imgData = ctx.getImageData(0, 0, imgW, imgH);
-        for (let x = 0; x <= imgData.width; x += 6) {
-            for (var y = 0; y < imgData.height; y += 6) {
-                var i = (y * imgData.width + x) * 4;
-                if (imgData.data[i + 3] > 128 && imgData.data[i] < 200) {
-                    var dot = new Dot(x, y, 0, 2)
+        // 获取图片的宽高
+        let imgWidth = image.width,
+            imgHeight = image.height;
+        let imageData = ctx.getImageData(0, 0, imgWidth, imgHeight)
+        console.log(imageData, 'imageData');
+
+        // 处理像素数据 给每个像素点都创建一个粒子
+        for (let x = 0; x < imageData.width; x += 6) {
+            for (let y = 0; y < imageData.height; y += 6) {
+                // 此行代码有待研究
+                let i = (y * imageData.width + x) * 4
+                if (imageData.data[i + 3] > 128 && imageData.data[i] > 200) {
+                    let dot = new Dot(x, y, 2)
                     dotList.push(dot)
                 }
             }
         }
-        console.log(dotList, 'dotList');
-        draw()
+        this.drawParticles()
     }
-
-    function Dot(x, y, z, r) {
-        this.x = x
-        this.y = y
-        this.z = z
+    // 创建粒子实例 传入画圆需要的中心位置及半径
+    function Dot(centerX, centerY, r) {
+        this.x = centerX
+        this.y = centerY
         this.r = r
     }
+    // 绘制粒子
+    function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    function draw() {
-        ctx.clearRect(0, 0, winWidth, winHeight);
-        ctx.fillStyle = "#000";
-
-        for (var i = 0; i < dotList.length; i += 1) {
-            let curDot = dotList[i];
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(curDot.x, curDot.y, curDot.r, 0, 2 * Math.PI);
+        for (let i = 0; i < dotList.length; i++) {
+            let docValue = dotList[i]
+            ctx.save()
+            ctx.beginPath()
+            ctx.arc(docValue.x, docValue.y, docValue.r, 0, 2 * Math.PI)
             ctx.fillStyle = "pink"
-            ctx.fill();
-            ctx.restore();
+            ctx.fill()
+            ctx.restore()
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // // 创建一个画布
+    // let cav = document.getElementById('canvas')
+    // let ctx = cav.getContext('2d')
+    // var winWidth = document.documentElement.clientWidth,
+    //     winHeight = document.documentElement.clientHeight;
+    // cav.width = winWidth;
+    // cav.height = winHeight;
+    // let image = new Image()
+    // image.src = "img.jpeg"
+    // var dotList = []
+    // var imgW = image.width,
+    //     imgH = image.height;
+    // image.onload = () => {
+    //     ctx.drawImage(image, 0, 0)
+    //     var imgData = ctx.getImageData(0, 0, imgW, imgH);
+    //     for (let x = 0; x < imgData.width; x += 6) {
+    //         for (var y = 0; y < imgData.height; y += 6) {
+    //             var i = (y * imgData.width + x) * 4;
+    //             if (imgData.data[i + 3] > 128 && imgData.data[i] < 200) {
+    //                 var dot = new Dot(x, y, 2)
+    //                 dotList.push(dot)
+    //             }
+    //         }
+    //     }
+    //     console.log(dotList, 'dotList');
+    //     draw()
+    // }
+
+    // function Dot(x, y, r) {
+    //     this.x = x
+    //     this.y = y
+    //     this.r = r
+    // }
+
+    // function draw() {
+    //     ctx.clearRect(0, 0, winWidth, winHeight);
+    //     ctx.fillStyle = "#000";
+
+    //     for (var i = 0; i < dotList.length; i += 1) {
+    //         let curDot = dotList[i];
+    //         ctx.save();
+    //         ctx.beginPath();
+    //         ctx.arc(curDot.x, curDot.y, curDot.r, 0, 2 * Math.PI);
+    //         ctx.fillStyle = "pink"
+    //         ctx.fill();
+    //         ctx.restore();
+    //     }
+    // }
 </script>
 
 </html>
