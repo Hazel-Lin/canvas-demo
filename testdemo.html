@@ -23,7 +23,7 @@
 <div style="display:none">
   <div class="ele">WELCOM</div>
   <div class="ele">图片粒子化</div>
-  <div class="ele" data-dr="2"><img src="img.jpeg" alt=""/></div>
+  <!-- <div class="ele" data-dr="2"><img src="img.jpeg" alt=""/></div> -->
   <div class="ele">文字粒子化</div>
   <div class="ele">WAxes</div>
 </div>
@@ -208,7 +208,7 @@
     function getRandom(a, b) {
       return Math.random() * (b - a) + a
     }
-
+    // 粒子化
     function getimgData() {
       var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
       context.clearRect(0, 0, canvas.width, canvas.height);

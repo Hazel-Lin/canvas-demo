@@ -18,20 +18,27 @@
         //创建上下文对象
         let cxt = cav.getContext('2d')
         //开始绘图
-        cxt.fillStyle = "rgba(0,0,230,0.4)"
-        cxt.fillRect(20, 150, 50, 50)
-        cxt.fillStyle = "rgba(0,0,230,0.4)"
-        cxt.fillRect(50, 180, 50, 50)
-        cxt.strokeStyle = "rgba(0,0,230,0.4)"
-        cxt.strokeRect(50, 180, 50, 50)
-        cxt.rect(120, 180, 100, 100)
-        cxt.strokeStyle = "rgba(0,0,200,0.4)"
-        cxt.stroke()
-        cxt.beginPath()
-        cxt.fillStyle = "rgba(0,0,200,0.4)"
-        cxt.rect(20, 10, 100, 100)
-        cxt.fill()
-        cxt.closePath()
+        // cxt.fillStyle = "rgba(0,0,230,0.4)"
+        // cxt.fillRect(20, 150, 50, 50)
+        // cxt.fillStyle = "rgba(0,0,230,0.4)"
+        // cxt.fillRect(50, 180, 50, 50)
+        // cxt.strokeStyle = "rgba(0,0,230,0.4)"
+        // cxt.strokeRect(50, 180, 50, 50)
+        // cxt.rect(120, 180, 100, 100)
+        // cxt.strokeStyle = "rgba(0,0,200,0.4)"
+        // cxt.stroke()
+        // cxt.beginPath()
+        // cxt.fillStyle = "rgba(0,0,200,0.4)"
+        // cxt.rect(20, 10, 100, 100)
+        // cxt.fill()
+        // cxt.closePath()
+
+        cxt.beginPath();
+cxt.arc(100,70,50,0,2*Math.PI,false)
+cxt.closePath();
+cxt.stroke()
+
+
     }
 </script>
 

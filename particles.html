@@ -11,10 +11,15 @@
 <body>
     <canvas id="canvas" width="300" height="300" style="border:1px solid blue"></canvas>
 </body>
+<style>
+    * {
+        margin: 0
+    }
+</style>
 <script>
     // 手写一个粒子运动
     /*
-    获取上下文 创建画布
+    创建画布 获取上下文
     创建图片 绘图 如何展示整个图片
     获取画布上指定矩形的像素数据 处理数据 给每个像素点都创建一个粒子(图片跨域问题)
     创建粒子实例 => 实际上是画一个个填充好的圆
@@ -25,7 +30,7 @@
     考虑最后一个粒子
     什么时候结束动画
     */
-    // 获取上下文 创建画布 创建图片
+    //  创建画布 获取上下文 创建图片
     let canvas = document.getElementById("canvas"),
         ctx = canvas.getContext('2d'),
         image = new Image(),
@@ -36,62 +41,115 @@
     image.src = "img.jpeg"
     // canvas绘图 需要等到图片加载完成才可绘制 否则一片空白
     image.onload = () => {
-        ctx.drawImage(image, 0, 0)
-        // 获取图片的宽高
+         // 获取图片的宽高
         let imgWidth = image.width,
             imgHeight = image.height;
+        ctx.drawImage(image, 0, 0)
+       
         let imageData = ctx.getImageData(0, 0, imgWidth, imgHeight)
-        console.log(imageData, 'imageData');
 
         // 处理像素数据 给每个像素点都创建一个粒子
         for (let x = 0; x < imageData.width; x += 6) {
             for (let y = 0; y < imageData.height; y += 6) {
                 // 此行代码有待研究
                 let i = (y * imageData.width + x) * 4
-                if (imageData.data[i + 3] > 128 && imageData.data[i] > 200) {
+                if (imageData.data[i + 3] > 128 && imageData.data[i] < 200) {
                     let dot = new Dot(x, y, 2)
                     dotList.push(dot)
                 }
             }
         }
-        this.drawParticles()
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawParticles()
     }
     // 创建粒子实例 传入画圆需要的中心位置及半径
+    // frameCount总帧数
     function Dot(centerX, centerY, r) {
         this.x = centerX
         this.y = centerY
         this.r = r
+        this.curFrame = 0 // 粒子当前所在帧数
+        this.frameCount = Math.ceil(5000 / 16.66)
+        this.sx = 1000 * Math.random()
+        this.sy = 1000 * Math.random()
+        // this.sx = 400
+        // this.sy = 400
+        // delay延迟开始运动时间
+        this.delay = this.frameCount * Math.random();
+        // 当前粒子已经等待了多少帧
+        this.delayCount = 0;
     }
+    /* 给每一个粒子添加缓动函数 根据不同的帧数 展示不同的位置
+     * 通过easeInOutQuart函数 返回的XY坐标 确认粒子当前的位置
+     *
+     * 积累一下缓动函数
+     * Tween.js
+     * t: current time（当前时间）；
+     * b: beginning value（初始值）；
+     * c: change in value（变化量）；
+     * d: duration（持续时间）。
+     */
+    function easeInOutQuart(t, b, c, d) {
+        if ((t /= d / 2) < 1) return c / 2 * t * t * t * t + b;
+        return -c / 2 * ((t -= 2) * t * t * t - 2) + b;
+    }
+
+    let requstId = null;
+
     // 绘制粒子
     function drawParticles() {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-        for (let i = 0; i < dotList.length; i++) {
-            let docValue = dotList[i]
+        var cutDotValue = null,
+            frameCount = 0,
+            curX, curY,
+            dotTime = 0,
+            dotDuration = 0,
+            finishCount = 0; // 记录共有几个粒子走到了对应的位置
+
+        for (let i = 0; i < dotList.length; i += 1) {
+            // 获取当前粒子
+            cutDotValue = dotList[i]
+            // 当前粒子所在的帧数 
+            dotTime = cutDotValue.curFrame
+            frameCount = cutDotValue.frameCount
+
+            if (cutDotValue.delayCount < cutDotValue.delay) {
+                cutDotValue.delayCount += 1;
+                continue;
+            }
             ctx.save()
             ctx.beginPath()
-            ctx.arc(docValue.x, docValue.y, docValue.r, 0, 2 * Math.PI)
+            /*
+            FPS 每秒帧数 帧率的意思
+            以60FPS计算 1000/60 = 16.66
+            每16.66ms 1帧
+            总帧数 = 总时间/16.66ms
+            */
+            if (dotTime < frameCount) {
+                curX = easeInOutQuart(dotTime, cutDotValue.sx, cutDotValue.x - cutDotValue.sx, cutDotValue.frameCount)
+                curY = easeInOutQuart(dotTime, cutDotValue.sy, cutDotValue.y - cutDotValue.sy, cutDotValue.frameCount)
+                ctx.arc(curX, curY, cutDotValue.r, 0, 2 * Math.PI)
+                cutDotValue.curFrame += 1
+            } else {
+                ctx.arc(cutDotValue.x, cutDotValue.y, cutDotValue.r, 0, 2 * Math.PI)
+                finishCount += 1
+            }
             ctx.fillStyle = "pink"
             ctx.fill()
             ctx.restore()
+
+            // 绘制完最后一个粒子时 取消动画绘制 所有粒子都走到对应位置后取消动画
+            if (finishCount >= dotList.length) {
+                cancelAnimationFrame(requestId)
+                return
+            }
         }
+        // requestId requestAnimationFrame函数的返回值 为一个long整数
+        requestId = requestAnimationFrame(drawParticles)
+
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
